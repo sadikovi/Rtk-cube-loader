@@ -161,19 +161,19 @@ How to setup data_source (all the inforamation is in Integrator's Guide as well,
 		h. Make sure that Supports Global Transactions is ON.
 		i. Choose One-Phase Commit option. Click Next.
 		j. Next page might not display all the information that you enterd below, thus check this page, and if something is wrong just type the info you need. Or just check that it is OK:
-		Database name -- you can enter any value you choose, f.e. "OracleBIInstance"
+			Database name -- you can enter any value you choose, f.e. "OracleBIInstance"
 
-		Host Name -- bi-server url (e.g. msk-02-orabits.tsretail.ru)
+			Host Name -- bi-server url (e.g. msk-02-orabits.tsretail.ru)
 
-		Port -- port "9703", in case OBI is installed by default. Otherwise, check port in Weblogic EM (Business Intelligence->Components->BIserverInstance), but usually it is "9703".
+			Port -- port "9703", in case OBI is installed by default. Otherwise, check port in Weblogic EM (Business Intelligence->Components->BIserverInstance), but usually it is "9703".
 
-		Database User Name -- user name in Oracle BI EE. It is the same user that is entered in USER_NAME in "CLProperties.ini"
+			Database User Name -- user name in Oracle BI EE. It is the same user that is entered in USER_NAME in "CLProperties.ini"
 
-		Password - user password
-		Confirm password - confirmation of password
+			Password - user password
+			Confirm password - confirmation of password
 
-		In "Driver Class Name" enter "oracle.bi.jdbc.AnaJdbcDriver"
+			In "Driver Class Name" enter "oracle.bi.jdbc.AnaJdbcDriver"
 
-		For URL field enter "jdbc:oraclebi://host:port/" (e.g. jdbc:oraclebi://msk-02-orabits.tsretail.ru:9703/)
+			For URL field enter "jdbc:oraclebi://host:port/" (e.g. jdbc:oraclebi://msk-02-orabits.tsretail.ru:9703/)
 
 		k. Test connection
