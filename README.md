@@ -91,7 +91,8 @@ DIRECTORIES
 
 	1. WORK_DIRECTORY - work directory of the file (application will be deployed in that directory and all the additional files will be loaded in that directory). By default, it is "/u01/oracle/weblogic/user_projects/domains/bifoundation_domain/servers/AdminServer/upload/".
 
-	If you want to work with shell files you have to switch on "Work with shell files" option and set up values below. By default it is off and application uses Oracle BI EE Metadata API to create files in repository. 
+If you want to work with shell files you have to switch on "Work with shell files" option and set up values below. By default it is off and application uses Oracle BI EE Metadata API to create files in repository. 
+	
 	2. BIN_DIRECTORY - directory that includes commands (varies from Windows to Linux, pay attention here)
 	
 	3. SCRIPT_DIRECTORY - scripts directory (it is the same for Linux, could be different for Windows, be careful)
@@ -124,6 +125,7 @@ Additional parameters (not so important, more tuning):
 
 
 If you want to change name of packages and procedures, please change those settings as well
+	
 	3. DB_STRUCTURE_PACKAGE
 	4. DB_FNC_CREATE_CUBE
 	5. DB_FNC_GET_PM_NAMES
@@ -137,6 +139,7 @@ If you want to change name of packages and procedures, please change those setti
 
 
 For success and error messages on other languages besides English (e.g. Russian), please change parameters in those sections
+	
 	SUCCESS_MESSAGES
 	ERRORS
 
@@ -145,6 +148,7 @@ Do not worry! You will find all necessary information and helpful comments in CL
 
 
 How to setup data_source (all the inforamation is in Integrator's Guide as well, if you are lazy, read below):
+
 	1. Set up wsil.browsing in Weblogic EM (check anyway)
 	2. Create new connection JDBC (jndi/bi/server) in Weblogic Console
 		a. Go to Services -> Data Sources
