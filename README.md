@@ -7,12 +7,18 @@ Application for creating OLAP cubes based on Excel files. Uses Oracle BIEE 11g A
 cube loader can load Excel files using web interface (HTML/Javascript/CSS) and let users work with data in Oracle BIEE 11g. Information in Excel file is automatically parsed in Java and loaded in database. Then application creates business model in repository based on Excel table (can create as simple star schemes as very complex snowflakes). After loading file user can build analyses in OBIEE without any additional steps. So it is just "Open OBIEE loading panel -> select excel file with data -> wait until procedure is over (usually it takes couple of minutes for large file) -> create ad-hoc analysis using your subject area based on Excel file". 
 
 Package:
-	1. DB Module - all for deploying in database (ddl, sql scripts)
-	2. Java Module - .war file to be deployed on Weblogic server
-	3. Properties - includes CLProperties.ini, CLModels.ini
-	4. Javascript (OBI Dashboard) - web interface
-	5. Readme - readme
-	6. sample_... .xls - examples of data that can be loaded
+================
+1. DB Module - all for deploying in database (ddl, sql scripts)
+
+2. Java Module - .war file to be deployed on Weblogic server
+
+3. Properties - includes CLProperties.ini, CLModels.ini
+
+4. Javascript (OBI Dashboard) - web interface
+
+5. Readme - readme
+
+6. sample_... .xls - examples of data that can be loaded
 
 
 Environment: WebLogic
