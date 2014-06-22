@@ -1,86 +1,85 @@
-Приложение позволяет загружать эксель файл через специальный интерфейс и работать с данными уже в BI.
-Информация автоматически загружается и парсится в базе, автоматически создается модель данных в репозитории. 
-После загрузки файла пользователь может сразу создавать анализ на загруженных данных.
+Rtk-cube-loader
+================
 
-Содержание архива:
-	1. DB Module - все, что касается DB части (ddl, sql)
-	2. Java Module - содержит .war файл приложения
-	3. Properties - содержит CLProperties.ini, CLModels.ini
-	4. Javascript (OBI Dashboard) - содержит скрипт для интерфейса (главное, проверить пути со javascript-ами и все)
-	5. Readme - описание
-	6. sample_... .xls - примеры загрузочных файлов
+Application for creating OLAP cubes based on Excel files. Uses Oracle BIEE 11g API.
 
 
-Среда (тестировалось): WebLogic
+cube loader can load Excel files using web interface (HTML/Javascript/CSS) and let users work with data in Oracle BIEE 11g. Information in Excel file is automatically parsed in Java and loaded in database. Then application creates business model in repository based on Excel table (can create as simple star schemes as very complex snowflakes). After loading file user can build analyses in OBIEE without any additional steps. So it is just "Open OBIEE loading panel -> select excel file with data -> wait until procedure is over (usually it takes couple of minutes for large file) -> create ad-hoc analysis using your subject area based on Excel file". 
+
+Package:
+	1. DB Module - all for deploying in database (ddl, sql scripts)
+	2. Java Module - .war file to be deployed on Weblogic server
+	3. Properties - includes CLProperties.ini, CLModels.ini
+	4. Javascript (OBI Dashboard) - web interface
+	5. Readme - readme
+	6. sample_... .xls - examples of data that can be loaded
+
+
+Environment: WebLogic
 	WebLogic Server Version: 10.3.5.0
 	Java version 1.6.0_20
 	Oracle Database 11g Enterprise Edition Release 11.2.0.2.0 - 64bit Production
 
-Установка приложения и интерфейса загрузки:
-	1. Производится деплой всех структур и пакетов в схеме базы (рекомендуется для этого создавать отдельную схему) из папки DB Module
-	2. Приложение устанавливается через консоль Weblogic (стандартная процедура, необходимо запомнить путь установки, будет использоваться в WORK_DIRECTORY)
-	3. В эту же директорию копируются измененные файлы "CLProperties.ini", "CLModels.ini"
-	4. Настраивается data_source в консоли Weblogic
-	5. Создается интерфейс по загрузке на странице инфопанели OBI
+How to deploy it and use it:
+	1. Deploy all the files - packages and tables in Database module in separate (prefereable) scheme
+	2. Application .war file is deployed in Weblogic server (standard procedure, just have to remember path for installing as it is going to be used in WORK_DIRECTORY)
+	3. Copy changed (as you can change settings in that properties file) "CLProperties.ini", "CLModels.ini" in directory from above (2.)
+	4. Set up data_source in Weblogic Console - you should also change information in CLProperties.ini
+	5. Create web interface (paste code) in Oracle BI dashboard
 
-Контекст приложения и Деплоймент.
-	Контекст приложения при деплое должен быть: analytics/rtk-cube-loader (/analytics/rtk-cube-loader)
+Context of application and deployment.
+	Context during deploy should be: analytics/rtk-cube-loader (/analytics/rtk-cube-loader)
 
-Конфигурационный файл приложения
-	В конфигурационном файле веб-приложения web.xml в конфигурации сервлета StartServlet нужно задать значение для инициализирующего параметра configFilePath (можно просто открыть .war файл архиватором и изменить соответствующую строку в web.xml).
-	Значение должно содержать абсолютный путь к конфигурационному файлу приложения CLProperties.ini. Приложение будет ссылаться к нему при инициализации настроек.
-	Например: <param-value>/MiddlewareHome/user_projects/domains/bifoundation_domain/servers/AdminServer/upload/CLProperties.ini</param-value>
-
-	В случае если значение не задано (<param-value></param-value>) приложение попытается найти файл CLProperties.ini по пути контекста приложения (properties/CLProperties.ini).
+Properties file.
+	You should set up value for init parameter "configFilePath" in web.xml (regarding to StartServlet). You can simply open .war file and change that value.
+	Value should be an absolute path to configuration file (CLProperties.ini) as application will be loading it from there. For example, <param-value>/MiddlewareHome/user_projects/domains/bifoundation_domain/servers/AdminServer/upload/CLProperties.ini</param-value>
+	If value is empty (<param-value></param-value>) or invalid application will try to get file from application's context (properties/CLProperties.ini).
 
 
+There are some settings below that you should change (there are many settings in that file, but these ones are very important) in CLProperties.ini and copy it in WORK_DIRECTORY directory. You can change CLModels.ini or leave it empty as it is used for keeping log of OLAP cubes created.
 
-Ниже перечислены настройки, которые нужно будет сделать в конфигурационном файле "CLProperties.ini" и перенести его в директорию WORK_DIRECTORY
-В "CLModels.ini" можно ничего не менять, либо оставить его пустым.
-
-Необходимые настройки:
+Important settings:
 
 PRESENTATION_SERVICES
 
-1. BI_ANALYTICS_URL - ссылка на сервер BI
+1. BI_ANALYTICS_URL - http link to the Oracle BIEE server
 
 CONNECTION
 
-1. DB_SCHEME_NAME - название схемы, где будут создаваться объекты ХД
-2. DB_SCHEME_PASSWORD - пароль для этой схемы
-3. DB_SOURCE_HOST - хост
-4. DB_SOURCE_PORT - порт
-5. DB_SOURCE_SERVICE_NAME - service name
+1. DB_SCHEME_NAME - scheme name where all the objects are deployed
+2. DB_SCHEME_PASSWORD - password for scheme
+3. DB_SOURCE_HOST - host for DB server
+4. DB_SOURCE_PORT - port for DB server
+5. DB_SOURCE_SERVICE_NAME - DB server name
 
 DIRECTORIES
 
-1. WORK_DIRECTORY - рабочая директория (как правило, сюда устанавливают само приложение, сюда же будут сохраняться все дополнительные файлы, генерируемые приложением; по умолчанию "/u01/oracle/weblogic/user_projects/domains/bifoundation_domain/servers/AdminServer/upload/")
+1. WORK_DIRECTORY - work directory of the file (application will be deployed in that directory and all the additional files will be loaded in that directory). By default, it is "/u01/oracle/weblogic/user_projects/domains/bifoundation_domain/servers/AdminServer/upload/".
 
-Эти настройки нужно менять, если вы хотите работать с shell файлами (нужно выставить соответствующую настройку, так как по умолчанию, она выключена)
-2. BIN_DIRECTORY - директория с командами (для Windows придется поменять, для Linux - должно быть таким же, но все же стоит проверить)
-3. SCRIPT_DIRECTORY - директория со скриптами (для Windows придется поменять, для Linux - должно быть таким же, но все же стоит проверить)
+If you want to work with shell files you have to switch on "Work with shell files" option and set up values below. By default it is off and application uses Oracle BI EE Metadata API to create files in repository. 
+2. BIN_DIRECTORY - directory that includes commands (varies from Windows to Linux, pay attention here)
+3. SCRIPT_DIRECTORY - scripts directory (it is the same for Linux, could be different for Windows, be careful)
 
 REPOSITORY
 
-1. RPD_NAME - название репозитория
-2. RPD_PASSWORD - пароль к репозиторию
-3. USER_NAME - пользователь, под которым будут выполняться изменения в репозитории (рекомендуется завести такого пользователя в консоли Weblogic)
-4. USER_PASSWORD - пароль для пользователя
-5. SERVER_DSN - DSN сервера (нужен, если у вас сервер на Windows и вы используйте shell скрипты для создания изменений)
+1. RPD_NAME - repository name for BI server
+2. RPD_PASSWORD - repository password
+3. USER_NAME - user in OBIEE that application will use to make changes (you better set up one in Weblogic console)
+4. USER_PASSWORD - the user password
+5. SERVER_DSN - server DSN (you have to set this, if you are using Windows and you want to use shell scripts for making changes
 
-6. USE_WEB_SERVICES_AGAINST_SHELL - использование Web services вместо Shell скриптов для внесения изменений (рекомендуется включить, что и выставлено по умолчанию)
-7. SAVE_METADATA_XML_SCRIPTS_ON_SERVER - сохранение shell скриптов в каталоге сервера (по умолчанию выключено)
+6. USE_WEB_SERVICES_AGAINST_SHELL - using Oracle Metadata API for deploying all changes in repository. By default, it is on. If you want to use Shell scripts for that, switch it off
+7. SAVE_METADATA_XML_SCRIPTS_ON_SERVER - save shell scripts on server (by default it is off)
 
-8. CREATE_VARIABLES_ON_APP_DEPLOY - особенность создания переменных (либо при деплое, либо с первым запуском, рекомендуется выставлять значение false)
+8. CREATE_VARIABLES_ON_APP_DEPLOY - creates all necessary variables in repository from application deploy. If it is on - will create with first deploy, if it is off - will create them with the first file load. Be default it is false
 
 
+Additional parameters (not so important, more tuning):
 
-Необязательные параметры:
+1. ADMIN_ROLE - administrator role (by default, BIAdministrator)
+2. BI_REQUIRED_ROLE - user role for using this application (by default, BIAuthor)
 
-1. ADMIN_ROLE - роль администратора для приложения (по умолчанию, BIAdministrator)
-2. BI_REQUIRED_ROLE - роль для пользования приложением (по умолчанию, BIAuthor)
-
-Если Вы изменили название пакета и процедур, просьба поменять настройки ниже
+If you want to change name of packages and procedures, please change those settings as well
 3. DB_STRUCTURE_PACKAGE
 4. DB_FNC_CREATE_CUBE
 5. DB_FNC_GET_PM_NAMES
@@ -90,42 +89,42 @@ REPOSITORY
 9. DB_SEQ_PRC_ID_NEXTVAL
 10. DB_SEQ_PRC_ID_CURRVAL
 
-11. DB_AUTO_COMMIT - автокоммит каждой транзакции (по умолчанию выключен)
+11. DB_AUTO_COMMIT - autocommit (will commit every transaction, by default is false, and that value is recommended)
 
-Для русскоязычного текста ошибок и сообщений необходимо поменять параметры в разделах:
+For success and error messages on other languages besides English (e.g. Russian), please change parameters in those sections
 SUCCESS_MESSAGES
 ERRORS
 
 
-В принципе в конфигурацинном файле написано, что и как заполнять/даны примеры.
+Do not worry! You will find all necessary information and helpful comments in CLProperties.ini.
 
 
-Для того чтобы настроить data_source (в принципе все написано в Integrator's Guide, если лень читать - пользуйтесь алгоритмом ниже):
-1. Настроить wsil.browsing in Weblogic EM (если не настроен, если настроен, все равно проверить)
-2. Создать новое JDBC (jndi/bi/server) подключение в Weblogic Console
-	a. Зайти в Services -> Data Sources
-	b. Если уже есть "bi/server" соединение, то просто проверить настройки (перейти к пункту k)
-	c. Создать новое соединение Generic Data Source
-	d. В поле Name ввести "bi/server"
-	e. В поле JNDI Name ввести "jdbc/bi/server"
-	f. Выбрать Database Type как "Other". Нажать Next.
-	g. Выбрать Database driver as "Other". Нажать Next.
-	h. Убедиться, что Supports Global Transactions включена.
-	i. Выбрать One-Phase Commit option. Нажать Next.
-	j. Следующая страница может не вывести то, что вы ввели выше, поэтому нужно будет заполнить ее следующим образом (или проверить, что заполнено так):
+How to setup data_source (all the inforamation is in Integrator's Guide as well, if you are lazy, read below):
+1. Set up wsil.browsing in Weblogic EM (check anyway)
+2. Create new connection JDBC (jndi/bi/server) in Weblogic Console
+	a. Go to Services -> Data Sources
+	b. If there is already "bi/server" connection, just check it (and go to "k")
+	c. Create new connection as "Generic Data Source" type
+	d. Enter Name as "bi/server"
+	e. Enter JNDI Name as "jdbc/bi/server"
+	f. Choose Database Type as "Other". Click Next.
+	g. Choose Database driver as "Other". Click Next.
+	h. Make sure that Supports Global Transactions is ON.
+	i. Choose One-Phase Commit option. Click Next.
+	j. Next page might not display all the information that you enterd below, thus check this page, and if something is wrong just type the info you need. Or just check that it is OK:
 		Database name -- you can enter any value you choose, f.e. "OracleBIInstance"
 
-		Host Name -- bi-server url (f.e. msk-02-orabits.tsretail.ru)
+		Host Name -- bi-server url (e.g. msk-02-orabits.tsretail.ru)
 
-		Port -- порт "9703", если OBI установлен по умолчанию. Если нет, то нужно проверить порт в Weblogic EM (Business Intelligence->Components->BIserverInstance), но, как правило, используется порт "9703".
+		Port -- port "9703", in case OBI is installed by default. Otherwise, check port in Weblogic EM (Business Intelligence->Components->BIserverInstance), but usually it is "9703".
 
-		Database User Name -- имя пользователя в BI. Это тот же пользователь, что указан в USER_NAME в файле "CLProperties.ini"
+		Database User Name -- user name in Oracle BI EE. It is the same user that is entered in USER_NAME in "CLProperties.ini"
 
-		Password - пароль пользователя
-		Confirm password - подтверждение пароля
+		Password - user password
+		Confirm password - confirmation of password
 
-		Для поля Driver Class Name введите "oracle.bi.jdbc.AnaJdbcDriver"
+		In "Driver Class Name" enter "oracle.bi.jdbc.AnaJdbcDriver"
 
-		Для поля URL введите "jdbc:oraclebi://host:port/" (например, jdbc:oraclebi://msk-02-orabits.tsretail.ru:9703/)
+		For URL field enter "jdbc:oraclebi://host:port/" (e.g. jdbc:oraclebi://msk-02-orabits.tsretail.ru:9703/)
 
-	k. Тест соединения
+	k. Test connection
