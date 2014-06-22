@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle-webservice-clients xmlns:ns2="http://java.sun.com/xml/ns/javaee">
+   <webservice-client>
+      <service-qname namespaceURI="http://ws.admin.obiee.oracle/"
+                     localpart="AdminService"/>
+      <port-info>
+         <wsdl-port namespaceURI="http://ws.admin.obiee.oracle/"
+                    localpart="AdminPort"/>
+         <runtime/>
+         <operations>
+            <operation name="callProcedure"/>
+            <operation name="callProcedureWithResults"/>
+            <operation name="startExtender"/>
+         </operations>
+      </port-info>
+   </webservice-client>
+</oracle-webservice-clients>

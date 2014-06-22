@@ -1,0 +1,329 @@
+<wsdl:definitions
+     name="AdminService"
+     targetNamespace="http://ws.admin.obiee.oracle/"
+     xmlns:tns="http://ws.admin.obiee.oracle/"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+     xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    >
+    <wsdl:types>
+        <xs:schema targetNamespace="http://ws.admin.obiee.oracle/types" version="1.0" xmlns:tns="http://ws.admin.obiee.oracle/types"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:complexType abstract="true" name="parameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:typedValue">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="name" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType abstract="true" name="typedValue">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="booleanParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:boolean"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="dateParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:dateTime"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="doubleParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="floatParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:float"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="integerParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:int"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="nStringParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="shortParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:short"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="stringParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="timeParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="value" type="xs:dateTime"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="timestampParameter">
+                <xs:complexContent>
+                    <xs:extension base="tns:parameter">
+                        <xs:sequence>
+                            <xs:element name="nanoseconds" type="xs:int"/>
+                            <xs:element minOccurs="0" name="value" type="xs:dateTime"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="results">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rows" nillable="true" type="tns:resultsRow"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="resultsRow">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="columns" nillable="true" type="tns:column"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="column">
+                <xs:complexContent>
+                    <xs:extension base="tns:typedValue">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="type" type="tns:types"/>
+                            <xs:element minOccurs="0" name="value" type="xs:anyType"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="timestampValue">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="nanoseconds" type="xs:anyType"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="types">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="BINARY"/>
+                    <xs:enumeration value="BLOB"/>
+                    <xs:enumeration value="BOOLEAN"/>
+                    <xs:enumeration value="DATE"/>
+                    <xs:enumeration value="DOUBLE"/>
+                    <xs:enumeration value="FLOAT"/>
+                    <xs:enumeration value="INTEGER"/>
+                    <xs:enumeration value="NSTRING"/>
+                    <xs:enumeration value="SHORT"/>
+                    <xs:enumeration value="STRING"/>
+                    <xs:enumeration value="TIME"/>
+                    <xs:enumeration value="TIMESTAMP"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:schema>
+        <schema targetNamespace="http://ws.admin.obiee.oracle/" xmlns="http://www.w3.org/2001/XMLSchema"
+             xmlns:ns1="http://ws.admin.obiee.oracle/types" xmlns:tns="http://ws.admin.obiee.oracle/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://ws.admin.obiee.oracle/types"/>
+            <xsd:complexType name="callProcedure">
+                <xsd:sequence>
+                    <xsd:element name="procedureName" type="xsd:string"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="ns1:parameter"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="callProcedure" type="tns:callProcedure"/>
+            <xsd:complexType name="callProcedureResponse">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="ns1:parameter"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="callProcedureResponse" type="tns:callProcedureResponse"/>
+            <xsd:complexType name="callProcedureWithResults">
+                <xsd:sequence>
+                    <xsd:element name="procedureName" type="xsd:string"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="ns1:parameter"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="callProcedureWithResults" type="tns:callProcedureWithResults"/>
+            <xsd:complexType name="callProcedureWithResultsResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="ns1:results"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="ns1:parameter"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="callProcedureWithResultsResponse" type="tns:callProcedureWithResultsResponse"/>
+            <xsd:complexType name="startExtender">
+                <xsd:sequence>
+                    <xsd:element name="adminBeanServerUrl" type="xsd:string"/>
+                    <xsd:element name="biAdminUser" type="xsd:string"/>
+                    <xsd:element name="biAdminPassword" type="xsd:string"/>
+                    <xsd:element name="jobID" type="xsd:string"/>
+                    <xsd:element name="connectionDetails" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="startExtender" type="tns:startExtender"/>
+            <xsd:complexType name="startExtenderResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="startExtenderResponse" type="tns:startExtenderResponse"/>
+            <xsd:complexType name="UnsupportedTypeException">
+                <xsd:sequence>
+                    <xsd:element name="Message" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="UnsupportedTypeException" type="tns:UnsupportedTypeException"/>
+            <xsd:complexType name="ValidationException">
+                <xsd:sequence>
+                    <xsd:element name="Message" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="ValidationException" type="tns:ValidationException"/>
+            <xsd:complexType name="ServerException">
+                <xsd:sequence>
+                    <xsd:element name="Message" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="ServerException" type="tns:ServerException"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="callProcedureInput">
+        <wsdl:part name="parameters" element="tns:callProcedure"/>
+    </wsdl:message>
+    <wsdl:message name="callProcedureOutput">
+        <wsdl:part name="parameters" element="tns:callProcedureResponse"/>
+    </wsdl:message>
+    <wsdl:message name="ServerException">
+        <wsdl:part name="ServerException" element="tns:ServerException"/>
+    </wsdl:message>
+    <wsdl:message name="ValidationException">
+        <wsdl:part name="ValidationException" element="tns:ValidationException"/>
+    </wsdl:message>
+    <wsdl:message name="callProcedureWithResultsInput">
+        <wsdl:part name="parameters" element="tns:callProcedureWithResults"/>
+    </wsdl:message>
+    <wsdl:message name="callProcedureWithResultsOutput">
+        <wsdl:part name="parameters" element="tns:callProcedureWithResultsResponse"/>
+    </wsdl:message>
+    <wsdl:message name="UnsupportedTypeException">
+        <wsdl:part name="UnsupportedTypeException" element="tns:UnsupportedTypeException"/>
+    </wsdl:message>
+    <wsdl:message name="startExtenderInput">
+        <wsdl:part name="parameters" element="tns:startExtender"/>
+    </wsdl:message>
+    <wsdl:message name="startExtenderOutput">
+        <wsdl:part name="parameters" element="tns:startExtenderResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="Admin">
+        <wsdl:operation name="callProcedure">
+            <wsdl:input message="tns:callProcedureInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:callProcedureOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:fault name="ServerException" message="tns:ServerException"/>
+            <wsdl:fault name="ValidationException" message="tns:ValidationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="callProcedureWithResults">
+            <wsdl:input message="tns:callProcedureWithResultsInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:callProcedureWithResultsOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:fault name="ServerException" message="tns:ServerException"/>
+            <wsdl:fault name="UnsupportedTypeException" message="tns:UnsupportedTypeException"/>
+            <wsdl:fault name="ValidationException" message="tns:ValidationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="startExtender">
+            <wsdl:input message="tns:startExtenderInput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+            <wsdl:output message="tns:startExtenderOutput" xmlns:ns1="http://www.w3.org/2006/05/addressing/wsdl"
+                 ns1:Action=""/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AdminSoapHttp" type="tns:Admin">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="callProcedure">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ServerException">
+                <soap:fault name="ServerException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="ValidationException">
+                <soap:fault name="ValidationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="callProcedureWithResults">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ServerException">
+                <soap:fault name="ServerException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="UnsupportedTypeException">
+                <soap:fault name="UnsupportedTypeException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="ValidationException">
+                <soap:fault name="ValidationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="startExtender">
+            <soap:operation soapAction=""/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AdminService">
+        <wsdl:port name="AdminPort" binding="tns:AdminSoapHttp">
+            <soap:address location="http://msk-02-orabits.tsretail.ru:9704/AdminService/AdminService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

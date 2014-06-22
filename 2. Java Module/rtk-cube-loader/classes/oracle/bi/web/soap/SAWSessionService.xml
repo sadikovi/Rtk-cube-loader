@@ -1,0 +1,23 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle-webservice-clients xmlns:ns2="http://java.sun.com/xml/ns/javaee">
+   <webservice-client>
+      <service-qname namespaceURI="urn://oracle.bi.webservices/v6"
+                     localpart="SAWSessionService"/>
+      <port-info>
+         <wsdl-port namespaceURI="urn://oracle.bi.webservices/v6"
+                    localpart="SAWSessionServiceSoap"/>
+         <runtime/>
+         <operations>
+            <operation name="logon"/>
+            <operation name="logonex"/>
+            <operation name="logoff"/>
+            <operation name="keepAlive"/>
+            <operation name="getCurUser"/>
+            <operation name="getSessionEnvironment"/>
+            <operation name="getSessionVariables"/>
+            <operation name="impersonate"/>
+            <operation name="impersonateex"/>
+         </operations>
+      </port-info>
+   </webservice-client>
+</oracle-webservice-clients>

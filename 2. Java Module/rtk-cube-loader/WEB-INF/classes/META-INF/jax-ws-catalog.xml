@@ -1,0 +1,6 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <system systemId="http://msk-02-orabits.tsretail.ru:9704/analytics/saw.dll/wsdl/v6"
+          uri="../oracle/bi/web/soap/SecurityService.wsdl"/>
+  <system systemId="http://msk-02-orabits.tsretail.ru:9704/AdminService/AdminService?WSDL"
+          uri="../oracle/obiee/admin/ws/AdminService.wsdl"/>
+</catalog>

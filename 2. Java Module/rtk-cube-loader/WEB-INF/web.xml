@@ -1,0 +1,50 @@
+<?xml version = '1.0' encoding = 'windows-1251'?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+  <servlet>
+    <servlet-name>StartServlet</servlet-name>
+    <servlet-class>sitronics.data.servlets.StartServlet</servlet-class>
+    <init-param>
+      <param-name>configFilePath</param-name>
+      <param-value>/u01/oracle/weblogic/user_projects/domains/bifoundation_domain/servers/AdminServer/upload/</param-value>
+    </init-param>
+    <load-on-startup>0</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>ImportServlet</servlet-name>
+    <servlet-class>sitronics.data.servlets.ImportServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>PMExportServlet</servlet-name>
+    <servlet-class>sitronics.data.servlets.PMExportServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ExcelLoadServlet</servlet-name>
+    <servlet-class>sitronics.data.servlets.ExcelCallOutServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ExcelCallInServlet</servlet-name>
+    <servlet-class>sitronics.data.servlets.ExcelCallInServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ImportServlet</servlet-name>
+    <url-pattern>importservlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PMExportServlet</servlet-name>
+    <url-pattern>pmexportservlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>StartServlet</servlet-name>
+    <url-pattern>/startservlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ExcelLoadServlet</servlet-name>
+    <url-pattern>/excelloadservlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ExcelCallInServlet</servlet-name>
+    <url-pattern>/excelcallinservlet</url-pattern>
+  </servlet-mapping>
+</web-app>

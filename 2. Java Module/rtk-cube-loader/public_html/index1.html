@@ -1,0 +1,102 @@
+<script src="http://127.0.0.1:7101/rtk-cube-loader/jscript/jquery-1.7.1.min.js"></script>
+<script src="http://127.0.0.1:7101/rtk-cube-loader/jscript/jquery.form.js"></script>
+<link rel="stylesheet" type="text/css" href="res/s_blafp/uicomponents/obips.FormFields/obips.FormFields.css"></link>
+<link rel="stylesheet" type="text/css" href="res/s_FusionFX/b_mozilla_4/views.css"></link>
+<link rel="stylesheet" type="text/css" href="res/sk_blafp/b_mozilla_4/home.css"></link>
+
+<div>
+	<form id="ImportExcelForm" action="http://127.0.0.1:7101/rtk-cube-loader/excelloadservlet" name="excelImportForm" method="POST" enctype="multipart/form-data">
+		<table>
+			<tbody>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td>
+						<label class="promptLabel BIHRecentSubHeader" for="excelImportFile">.xls файл: </label>
+						<!--div class="promptLabel textLabel">Загружаемый excel файл. Поддерживаются только файлы .xls</div-->
+					</td>
+					<td class="paddingTRMin">
+						<input type="file" class="promptTextField" id="excelImportFile" name="excelImportFile" size="45" border="0" style="width:300px;">
+					</td>
+				</tr>
+                                <tr>
+                                        <td>
+						
+					</td>
+					<td class="paddingTRMin">
+						<input type="checkbox" value="true" class="promptTextField" id="excelIsConfigFileUsed" name="excelIsConfigFileUsed" />
+                                                <label class="promptLabel BIHRecentSubHeader" for="excelIsConfigFileUsed">Загрузка .xls по XDO_CONFIGDATA</label>
+					</td>
+					
+				</tr>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td></td>
+					<td>
+						<input style="width:250px;" id="excelImportRun" class="button" value="Загрузить" type="submit"/>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+	<div id="progress" class="progress">
+		<div id="bar" class="bar"></div>
+		<div id="percent" class="percent">0%</div>
+	</div>
+	<div id="status"></div>
+</div>
+<script language="javascript">
+	var bar = document.getElementById("bar");
+	var percent = document.getElementById("percent");
+	var status = document.getElementById("status");
+	
+    var options = {
+		dataType : 'json',
+		beforeSend: function() {
+			status.innerHTML = "";
+			var percentVal = '0%';
+			bar.style.width = percentVal
+			percent.innerHTML = percentVal;
+		},
+		uploadProgress: function(event, position, total, percentComplete) {
+			var percentVal = percentComplete + '%';
+			bar.style.width = percentVal;
+			percent.innerHTML = percentVal;
+		},
+		success: function (data) {
+			var percentVal = '100%';
+			bar.style.width = percentVal;
+			percent.innerHTML = percentVal;
+			
+			var jsondata;
+			try {
+				//jsondata = JSON.parse(data);
+				jsondata = data;
+				alert("code: " + jsondata.code + ", message: " + jsondata.message);
+				console.log(data);
+			} catch (e) {
+				alert("Operation succeeded, but some errors occuried: " + data);
+			}
+		},
+		error: function(request, textStatus, thrownError) {
+			try {
+				data = JSON.parse(request.responseText);
+				//data = request.responseText;
+				alert("Error - code: " + data.code + ", message: " + data.message);
+				console.log(request.responseText);
+			} catch (e) {
+				alert("Error occuried: " + request.responseText);
+			}
+		}
+	}
+		
+	jQuery("#ImportExcelForm").ajaxForm(options);
+	
+</script>
+
+<style>
+	body { padding: 30px }
+	form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
+	.progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+	.bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+	.percent { position:absolute; display:inline-block; top:3px; left:48%; }
+</style>

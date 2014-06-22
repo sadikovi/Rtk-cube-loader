@@ -1,0 +1,428 @@
+<script src="/analytics/rtk-cube-loader/jscript/jquery-1.7.1.min.js"></script>
+<script src="/analytics/rtk-cube-loader/jscript/jquery.form.js"></script>
+<link rel="stylesheet" type="text/css" href="res/s_blafp/uicomponents/obips.FormFields/obips.FormFields.css"></link>
+<link rel="stylesheet" type="text/css" href="res/s_FusionFX/b_mozilla_4/views.css"></link>
+<link rel="stylesheet" type="text/css" href="res/sk_blafp/b_mozilla_4/home.css"></link>
+<script language="javascript">
+    var DATA = {};
+        $(document).ready(function() {
+            init(document.getElementById("excelPMName" + "Select" + "Radio"));
+			changeModels(document.getElementById("excelPMNameSelectRadioMy"), 0);
+            $.getJSON("/analytics/rtk-cube-loader/pmexportservlet", function(data) {
+                DATA = data;
+                loadDataToSelect(DATA, "my");              
+            });
+    });
+	
+    var options = {
+		dataType : 'json',
+		beforeSubmit : function() { lockControlSet(); },
+		success: function (data) {
+			var jsondata;
+			try {
+				//jsondata = JSON.parse(data);
+				jsondata = data;
+				alert("code: " + jsondata.code + ", message: " + jsondata.message);
+				console.log(data);
+			} catch (e) {
+				alert("Operation succeeded, but some errors occuried: " + data);
+			}
+			
+			if (jsondata.status == -1) {
+				unlockControlSet(true);
+			} else {
+				unlockControlSet(false);
+			}
+			
+			//hide loading div
+			//when success we execute this method in onReloadMetadata()
+			document.getElementById("loadingDiv").style.display = "none";
+		},
+		error: function(request, textStatus, thrownError) {
+			try {
+				data = JSON.parse(request.responseText);
+				//data = request.responseText;
+				alert("Error - code: " + data.code + ", message: " + data.message);
+				console.log(request.responseText);
+			} catch (e) {
+				alert("Error occuried: " + request.responseText);
+			}
+			unlockControlSet(true);
+			//hide loading div
+			document.getElementById("loadingDiv").style.display = "none";
+		}
+	}
+		
+	jQuery("#ImportExcelForm").ajaxForm(options);
+        
+	function init(obj) {
+		change(obj, 0);
+		if (obj.getAttribute("canloaddata") === "true") {
+			setLoadOnlyDataFlag(true);
+		} else {
+			setLoadOnlyDataFlag(false);
+		}
+	}
+	
+	function loadDataToSelect(data, flag) {
+		document.getElementById("excelPMNameSelect").innerHTML = "<option value=\"\"> - выберите предметную область - </option>";
+		if (flag === "my") {
+			for (i=0;i<data.MY.length;i++) {
+				if (data.MY[i].subjectAreaIndex === -1) {
+                    document.getElementById("excelPMNameSelect").innerHTML = "<option value=\"\"> - нет доступных моделей - </option>";    
+                } else {
+					var option = document.createElement("option");
+					option.value = data.MY[i].subjectArea;
+					option.innerHTML = data.MY[i].subjectArea;
+					document.getElementById("excelPMNameSelect").appendChild(option);
+				}
+			}
+		} else if (flag === "all") {
+			for (i=0;i<data.ALL.length;i++) {
+				if (data.ALL[i].subjectAreaIndex === -1) {
+                    document.getElementById("excelPMNameSelect").innerHTML = "<option value=\"\"> - нет доступных моделей - </option>";    
+                } else {
+					var option = document.createElement("option");
+					option.value = data.ALL[i].subjectArea;
+					option.innerHTML = data.ALL[i].subjectArea;
+					document.getElementById("excelPMNameSelect").appendChild(option);
+				}
+			}
+		} else {
+			console.log("fucking shit");
+		}
+	}
+	
+	function displayObjects(obj, obj_u) {
+		document.getElementById(obj.id.replace("Radio", "") + "Td").style.visibility = "visible";
+		document.getElementById(obj_u.id.replace("Radio", "") + "Td").style.visibility = "hidden";
+	}
+	
+	function change(obj, init) {
+		var obj_u;
+		if (obj.value == "select") {
+			obj_u = document.getElementById("excelPMName" + "Input" + "Radio");
+		} else if (obj.value == "input") {
+			obj_u = document.getElementById("excelPMName" + "Select" + "Radio");
+		}
+		if (init == 0) {
+			obj.checked = true;
+			obj_u.checked = false;
+			displayObjects(obj, obj_u);
+		} else {
+			if (obj.checked) {                      
+				obj.checked = true;
+				obj_u.checked = false;
+				displayObjects(obj, obj_u);
+			} else {
+				obj.checked = true;
+				obj_u.checked = false;
+			}
+		}
+	}
+	
+	function changeModels(obj, init) {
+		var obj_u;
+		if (obj.value == "all") {
+			obj_u = document.getElementById("excelPMNameSelectRadio" + "My");
+		} else if (obj.value == "my") {
+			obj_u = document.getElementById("excelPMNameSelectRadio" + "All");
+		}
+		if (init == 0) {
+			obj.checked = true;
+			obj_u.checked = false;
+		} else {
+			if (obj.checked) {                      
+				obj.checked = true;
+				obj_u.checked = false;
+				loadDataToSelect(DATA, obj.value);
+			} else {
+				obj.checked = true;
+				obj_u.checked = false;
+				loadDataToSelect(DATA, obj.value);
+			}
+		}
+	}
+	
+	function showLoadingDiv() {
+		//show loading div
+		document.getElementById("loadingDiv").style.display = "block";
+	}
+	
+	function onReloadMetadata(c, b) {
+		var a = document.getElementById(c);
+		if (a != null) {
+			a.innerHTML = b
+		}
+		
+		if (window.location.href.split("saw.dll?")[1]) {
+			var href = window.location.href;
+			var _scid = "";
+			
+			var d=saw.createFormFromString(saw.commandToURL("Maintain") + "&ReloadMetadata=Yes");
+			saw.addSessionSecurityCodeInput(d);
+			
+			if (d.getElementsByTagName("input")[1].name === "_scid") {
+				_scid = d.getElementsByTagName("input")[1].value;
+			} else {
+				_scid = d.getElementsByTagName("input")[0].value;
+			}
+			
+			var c = window.open(saw.commandToURL("Maintain") + "&ReloadMetadata=Yes&_scid=" + _scid, "Reload Metadata", "width=200,height=200, menubar=no,location=no,resizable=no,scrollbars=no,status=no").close();
+			
+			window.location.reload();
+
+			//then hide loading div
+			document.getElementById("loadingDiv").style.display = "none";
+		}
+	}
+	
+	function lockControlSet() {
+		//set disabled attribute
+		document.getElementById("excelUploadName").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameSelectRadio").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameSelectRadioMy").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameSelectRadioAll").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameSelect").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameInputRadio").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameInput").setAttribute("disabled", "true");
+		document.getElementById("excelPMDescription").setAttribute("disabled", "true");
+		//document.getElementById("excelImportFile").setAttribute("disabled", "true");
+		jQuery("#excelImportFile").click('click.myns', function () { return false; });
+		document.getElementById("excelImportRun").setAttribute("disabled", "true");
+		document.getElementById("excelPMNameLoadOnlyDataRadio").setAttribute("disabled", "true");
+		document.getElementById("reloadDataLinkDiv").style.display = "none";
+	}
+	
+	function unlockControlSet(isError) {
+		if (!isError) {
+			//remove all values from inputs
+			document.getElementById("excelUploadName").value="";
+			document.getElementById("excelPMNameInput").value="";
+			document.getElementById("excelPMDescription").value="";
+			document.getElementById("excelImportFile").value="";
+		}
+		
+		//remove disabled attribute
+		document.getElementById("excelUploadName").removeAttribute("disabled");
+		document.getElementById("excelPMNameSelectRadio").removeAttribute("disabled");
+		document.getElementById("excelPMNameSelectRadioMy").removeAttribute("disabled");
+		document.getElementById("excelPMNameSelectRadioAll").removeAttribute("disabled");
+		document.getElementById("excelPMNameSelect").removeAttribute("disabled");
+		document.getElementById("excelPMNameInputRadio").removeAttribute("disabled");
+		document.getElementById("excelPMNameInput").removeAttribute("disabled");
+		document.getElementById("excelPMDescription").removeAttribute("disabled");
+		document.getElementById("excelImportFile").removeAttribute("disabled");
+		document.getElementById("excelImportRun").removeAttribute("disabled");
+		document.getElementById("excelPMNameLoadOnlyDataRadio").removeAttribute("disabled");
+		jQuery("#excelImportFile").unbind("click");
+		document.getElementById("reloadDataLinkDiv").style.display = "block";
+	}
+	
+	function setLoadOnlyDataFlag(isAvailable) {
+		if (!isAvailable) {
+			document.getElementById("excelPMNameLoadOnlyDataRadio").setAttribute("disabled", "true");
+		} else {
+			document.getElementById("excelPMNameLoadOnlyDataRadio").removeAttribute("disabled");
+		}
+		return false;
+	}
+	
+</script>
+<div/>
+	<form id="ImportExcelForm" action="/analytics/rtk-cube-loader/importservlet" name="excelImportForm" method="POST" enctype="multipart/form-data">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<label class="promptLabel BIHRecentSubHeader" for="excelUploadName">Название загрузки: </label>
+						<div class="promptLabel textLabel">Укажите название текущей загрузки, в рамках которой происходит создание/модификация предметной области</div>
+					</td>
+					<td class="paddingTRMin">
+						<input name="excelUploadName" id="excelUploadName" class="promptTextField" style="width:240px;" />
+					</td>                                   
+				</tr>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td>
+						<!--label class="promptLabel BIHRecentSubHeader" for="excelPMNameInput">Название предметной области: </label-->
+						<label class="promptLabel BIHRecentSubHeader">Название предметной области: </label>
+						<div class="promptLabel textLabel">Выберите из списка или ввести название предметной области. Стоит заметить, что название предметной области должно быть уникальным</div>
+					</td>
+					<td class="paddingTRMin">
+						<table>
+							<tbody>
+								<tr>
+									<td valign="top">
+										<table>
+											<tbody>
+												<tr>
+													<td>
+														<input id="excelPMNameSelectRadio" canloaddata="true" onclick="change(this, 1);setLoadOnlyDataFlag(true);" type="checkbox" value="select" name="excelPMNameRadioName" />
+														<label class="promptLabel" for="excelPMNameSelectRadio">Существующая модель</label>
+													</td>
+												</tr>
+												<tr id="excelPMNameSelectTd">
+													<td>
+														<table>
+															<tbody>
+																<tr>
+																	<td class="paddingTR">
+																		<input id="excelPMNameSelectRadioMy" onclick="changeModels(this, 1);" type="checkbox" value="my" />
+																		<label class="promptLabel" for="excelPMNameSelectRadioMy">Мои модели</label>
+																	</td>
+																</tr>
+																<tr>
+																	<td class="paddingTR">
+																		<input id="excelPMNameSelectRadioAll" onclick="changeModels(this, 1);" type="checkbox" value="all" />
+																		<label class="promptLabel" for="excelPMNameSelectRadioAll">Все модели</label>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+													<td>
+														<span>
+															<select class="promptTextField" name="excelPMNameSelect" id="excelPMNameSelect" style="width:200px;">
+																<option value=""> - выберите предметную область - </option>
+															</select>
+														</span>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+									<td valign="top">
+										<table>
+											<tbody>
+												<tr>
+													<td>
+														<input id="excelPMNameInputRadio" canloaddata="false" onclick="change(this, 1);setLoadOnlyDataFlag(false);" type="checkbox" value="input" name="excelPMNameRadioName" />
+														<label class="promptLabel" for="excelPMNameInputRadio">Новая модель</label>
+													</td>
+												</tr>
+												<tr id="excelPMNameInputTd">
+													<td>
+														<table>
+															<tbody>
+																<tr>
+																	<td class="paddingTR">
+																		<label class="promptLabel" for="excelPMNameInput">Название: </label>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+													<td>
+														<table>
+															<tbody>
+																<tr>
+																	<td>
+																		<input name="excelPMNameInput" class="promptTextField" id="excelPMNameInput" style="width:200px;" />
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							<tbody>
+						</table>
+					</td>
+				</tr>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td>
+						<label class="promptLabel BIHRecentSubHeader">Обновление данных [только для существующей модели]: </label>
+						<div class="promptLabel textLabel">Укажите, будет ли текущая загрузка обновлением данных без изменения структуры модели или это будет полное обновление модели</div>
+					</td>
+					<td class="paddingTRMin">
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										<input id="excelPMNameLoadOnlyDataRadio" type="checkbox" value="loadonlydata" name="excelPMNameLoadOnlyDataRadio" />
+										<label class="promptLabel" for="excelPMNameLoadOnlyDataRadio">Обновление данных</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td>
+						<label class="promptLabel BIHRecentSubHeader">Описание предметной области: </label>
+						<div class="promptLabel textLabel">Введите описание предметной области для более удобного доступа. Стоит заметить, что описание всегда перезаписывается на введенное, независимо от того, создается новая или редактируется старая модель</div>
+					</td>
+					<td class="paddingTRMin">
+						<table>
+							<tbody>
+								<tr>
+									<td>
+										<label class="promptLabel" for="excelPMDescription">Описание: </label>
+									</td>
+								</tr>
+								<tr>
+									<td class="paddingTR">
+										<input class="promptTextField" name="excelPMDescription" id="excelPMDescription" style="width:240px;" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td>
+						<label class="promptLabel BIHRecentSubHeader" for="excelImportFile">.xls файл: </label>
+						<div class="promptLabel textLabel">Загружаемый excel файл. Поддерживаются только файлы .xls</div>
+					</td>
+					<td class="paddingTRMin">
+						<input type="file" class="promptTextField" id="excelImportFile" name="excelImportFile" size="45" border="0" style="width:300px;">
+					</td>
+				</tr>
+				<tr style="height:20px;"></tr>
+				<tr>
+					<td></td>
+					<td>
+						<input style="width:250px;" id="excelImportRun" class="button" onclick="showLoadingDiv();" value="Загрузить" type="submit"/>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+<div id="loadingDiv" class="TitleCell" style="display:none;padding-top:20px;">Пожалуйста, подождите. Идет загрузка...</div>
+<input style="display:none;" value="lock" type="button" onclick="lockControlSet();">
+<input style="display:none;" value="unlock" type="button" onclick="unlockControlSet(true);">
+<table id="reloadDataLinkDiv">
+	<tbody>
+		<tr>
+			<td>
+				<div class="promptLabel">По окончанию работы с загрузчиком данных модели просьба обновить метаданные, чтобы сразу же приступить к работе с предметной областью: </div>
+			</td>
+			<td>
+				<a class="CatalogActionLink promptLabel" id="reloadDataLink" href="javascript:void(null);" style="display:block;" onclick="onReloadMetadata('loadingDiv','<b>Reloading metadata, please wait...</b>');">Перезагрузить метаданные</a>
+			</td>
+		</tr>
+		<tr>
+		</tr>
+	</tbody>
+</table>
+
+<style>
+	.paddingTR {
+	  padding-left:50px;       
+	}
+	.paddingTRMin {
+	  padding-left:20px;       
+	}
+	.textLabel {
+		width:350px;
+		text-align:justify;
+	}
+</style>
