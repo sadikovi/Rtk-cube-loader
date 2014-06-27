@@ -4,7 +4,7 @@ Rtk-cube-loader
 Application for creating OLAP cubes based on Excel files. Uses Oracle BIEE 11g API.
 
 
-cube loader can load Excel files using web interface (HTML/Javascript/CSS) and let users work with data in Oracle BIEE 11g. Information in Excel file is automatically parsed in Java and loaded in database. Then application creates business model in repository based on Excel table (can create as simple star schemes as very complex snowflakes). After loading file user can build analyses in OBIEE without any additional steps. So it is just "Open OBIEE loading panel -> select excel file with data -> wait until procedure is over (usually it takes couple of minutes for large file) -> create ad-hoc analysis using your subject area based on Excel file". 
+Cube loader can load Excel files using web interface (HTML/Javascript/CSS) and let users work with data in Oracle BIEE 11g. Information in Excel file is automatically parsed in Java and loaded in database. Then application creates business model in repository based on Excel table (can create as simple star schemes as very complex snowflakes). After loading file user can build analyses in OBIEE without any additional steps. So it is just "Open OBIEE loading panel -> select excel file with data -> wait until procedure is over (usually it takes couple of minutes for large file) -> create ad-hoc analysis using your subject area based on Excel file". Excel files can be plain tables or pivot tables with multiple heading rows.
 
 
 Package
